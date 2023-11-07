@@ -229,11 +229,7 @@ RegisterCommand('resethud', function()
     restartHud()
 end)
 
-RegisterCommand('hud', function(args)
-    local argument = args[1]
-    if argument then
-          return toggleHud(argument == "on" and true or false)
-    end
+RegisterCommand('hud', function()
     toggleHud()
 end)
 
