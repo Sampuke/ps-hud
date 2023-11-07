@@ -816,7 +816,7 @@ local function updateShowVehicleHud(show)
         SendNUIMessage({
             action = 'car',
             topic = 'display',
-            show = HUD,
+            show = show,
             seatbelt = false,
         })
     end
@@ -832,7 +832,7 @@ local function updateVehicleHud(data)
         SendNUIMessage({
             action = 'car',
             topic = 'status',
-            show = HUD,
+            show = data[1],
             isPaused = data[2],
             seatbelt = data[3],
             speed = data[4],
