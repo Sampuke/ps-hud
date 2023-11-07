@@ -30,6 +30,7 @@ local showSquareB = false
 local CinematicHeight = 0.2
 local w = 0
 local radioTalking = false
+local HUD = true
 local Menu = {
     isOutMapChecked = true, -- isOutMapChecked
     isOutCompassChecked = true, -- isOutCompassChecked
@@ -182,37 +183,33 @@ end)
 
 RegisterKeyMapping('menu', Lang:t('info.open_menu'), 'keyboard', Config.OpenMenu)
 
+
+local function toggleHud(toggle)
+    HUD = toggle and toggle or not HUD
+    SendNUIMessage({
+        action = 'hudtick',
+        topic = 'display',
+        show = HUD,
+    })
+    if IsPedInAnyVehicle(PlayerPedId()) then
+        SendNUIMessage({
+            action = 'car',
+            topic = 'display',
+            show = HUD,
+            seatbelt = false,
+        })
+    end
+end
+
+exports('toggleHud', toggleHud())
 -- Reset hud
 local function restartHud()
     TriggerEvent("hud:client:playResetHudSounds")
     QBCore.Functions.Notify(Lang:t("notify.hud_restart"), "error")
     Wait(1500)
-    if IsPedInAnyVehicle(PlayerPedId()) then
-        SendNUIMessage({
-            action = 'car',
-            topic = 'display',
-            show = false,
-            seatbelt = false,
-        })
-        Wait(500)
-        SendNUIMessage({
-            action = 'car',
-            topic = 'display',
-            show = true,
-            seatbelt = false,
-        })
-    end
-    SendNUIMessage({
-        action = 'hudtick',
-        topic = 'display',
-        show = false,
-    })
+    toggleHud(false)
     Wait(500)
-    SendNUIMessage({
-        action = 'hudtick',
-        topic = 'display',
-        show = true,
-    })
+    toggleHud(true)
     Wait(500)
     QBCore.Functions.Notify(Lang:t("notify.hud_start"), "success")
     SendNUIMessage({
@@ -230,6 +227,14 @@ end)
 RegisterCommand('resethud', function()
     Wait(50)
     restartHud()
+end)
+
+RegisterCommand('hud', function(args)
+    local argument = args[1]
+    if argument then
+          return toggleHud(argument == "on" and true or false)
+    end
+    toggleHud()
 end)
 
 RegisterNUICallback('resetStorage', function(_, cb)
