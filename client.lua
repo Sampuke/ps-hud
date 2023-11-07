@@ -754,16 +754,6 @@ end
 
 local prevPlayerStats = { nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil }
 
-local function updateShowPlayerHud(show)
-    if prevPlayerStats['show'] ~= show then
-        prevPlayerStats['show'] = show
-        SendNUIMessage({
-            action = 'hudtick',
-            topic = 'display',
-            show = show
-        })
-    end
-end
 
 local function updatePlayerHud(data)
     local shouldUpdate = false
@@ -779,7 +769,7 @@ local function updatePlayerHud(data)
         SendNUIMessage({
             action = 'hudtick',
             topic = 'status',
-            show = data[1],
+            show = HUD,
             health = data[2],
             playerDead = data[3],
             armor = data[4],
@@ -826,7 +816,7 @@ local function updateShowVehicleHud(show)
         SendNUIMessage({
             action = 'car',
             topic = 'display',
-            show = false,
+            show = HUD,
             seatbelt = false,
         })
     end
@@ -842,7 +832,7 @@ local function updateVehicleHud(data)
         SendNUIMessage({
             action = 'car',
             topic = 'status',
-            show = data[1],
+            show = HUD,
             isPaused = data[2],
             seatbelt = data[3],
             speed = data[4],
@@ -1017,8 +1007,7 @@ CreateThread(function()
             end
         else
             -- Not logged in, dont show Status/Vehicle UI (cached)
-            updateShowPlayerHud(false)
-            updateShowVehicleHud(false)
+            toggleHud(false)
             DisplayRadar(false)
             Wait(1000)
         end
